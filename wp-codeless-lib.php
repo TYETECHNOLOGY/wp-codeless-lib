@@ -21,3 +21,32 @@
  * @license    http://www.gnu.org/licenses/gpl-2.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  * @package    wp-codeless-lib
 */
+
+namespace TDP;
+
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) exit;
+
+/**
+ * Codeless Class
+ * @since 1.0.0
+ */
+class Codeless {
+
+	/**
+	 * Whether or not this site is in debug mode.
+	 * @return boolean
+	 */
+	public static function is_development() {
+		return ( defined( 'WP_DEBUG' ) && WP_DEBUG );
+	}
+
+	/**
+	 * Whether or not this site is in script and debug mode.
+	 * @return boolean
+	 */
+	public static function is_script_debug() {
+		return self::is_development() && ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG );
+	}
+
+}

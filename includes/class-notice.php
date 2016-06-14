@@ -180,10 +180,10 @@ class Notice {
    *
    * @return void
    */
-  private function dismiss_notice() {
+  private function dismiss_notice( $id ) {
 
     $notices   = $this->get_dismissed_notices();
-    $notices[] = $this->get_id();
+    $notices[] = $id;
 
     update_option( self::STICKY_OPTION, $notices );
 
@@ -214,7 +214,7 @@ class Notice {
     // Check our nonce and make sure it's correct.
     check_ajax_referer( self::AJAX_ACTION, 'notice_nonce' );
 
-    $this->dismiss_notice();
+    $this->dismiss_notice( $_POST['notice_id'] );
 
     wp_send_json_success();
 

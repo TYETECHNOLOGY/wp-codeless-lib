@@ -214,7 +214,7 @@ class Notice {
     // Check our nonce and make sure it's correct.
     check_ajax_referer( self::AJAX_ACTION, 'notice_nonce' );
 
-    $this->dismiss_notice( $_POST['notice_id'] );
+    $this->dismiss_notice( sanitize_title( $_POST['notice_id'] ) );
 
     wp_send_json_success();
 

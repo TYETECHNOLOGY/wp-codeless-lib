@@ -34,6 +34,25 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 class Codeless {
 
 	/**
+	 * Includes path.
+	 *
+	 * @var string
+	 */
+	private $includes_path = '';
+
+	/**
+	 * Get thing started.
+	 */
+	public function __construct() {
+
+		// Set includes path.
+		$this->includes_path = untrailingslashit( plugin_dir_path( __FILE__ ) ) . '/includes/';
+
+		spl_autoload_register( array( $this, 'autoload' ) );
+
+	}
+
+	/**
 	 * Whether or not this site is in debug mode.
 	 * @return boolean
 	 */
@@ -47,6 +66,49 @@ class Codeless {
 	 */
 	public static function is_script_debug() {
 		return self::is_development() && ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG );
+	}
+
+	/**
+	 * Shows an admin notice.
+	 *
+	 * @param  string $type   the type of message accepted types are success, error, warning, info.
+	 * @param  string $text   the content of the message.
+	 * @param  string $id     optional ID, if passed, notice will be sticky.
+	 * @return mixed
+	 */
+	public static function show_admin_notice( $content, $type, $id = '' ) {
+		new \TDP\Notice( $type, $content, $id );
+	}
+
+	/**
+	 * Autoload classes.
+	 *
+	 * @since 1.0.0
+	 * @param  string $class class to load.
+	 * @return void.
+	 */
+	public function autoload( $class_name ) {
+
+		// Autoload classes with this namespace.
+		if ( false === strpos( $class_name, __NAMESPACE__ ) ) {
+			return;
+		}
+
+		// Remove namespace from class name.
+		$class_file = str_replace( __NAMESPACE__ . '\\', '', $class_name );
+
+		// Convert class name to filename.
+		$class_file = strtolower( $class_file );
+		$class_file = str_replace( '_', '-', $class_file );
+
+		// If there's any subnamespace convert that to a path.
+		$class_path = explode( '\\', $class_file );
+		$class_file = array_pop( $class_path );
+		$class_path = implode( '/', $class_path );
+
+		// Finally load the file.
+		require_once $this->includes_path . $class_path . '/class-' . $class_file . '.php';
+
 	}
 
 }

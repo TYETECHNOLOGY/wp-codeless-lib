@@ -12,7 +12,7 @@
 <div class="notice notice-<?php echo $type; ?> is-dismissible" <?php if( $this->is_sticky() ) : ?>id="tdp-codeless-notice-<?php echo $this->get_id();?>"<?php endif; ?>>
   <p><?php echo $content; ?></p>
 </div>
-
+<?php if( $this->is_sticky() ) : ?>
 <script type="text/javascript">
 jQuery( document ).ready( function ( $ ) {
 
@@ -32,3 +32,4 @@ jQuery( document ).ready( function ( $ ) {
 
 });
 </script>
+<?php endif; ?>

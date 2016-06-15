@@ -132,6 +132,23 @@ class Codeless {
 	}
 
 	/**
+	 * Add a message within the "after_plugin_row" area of the plugin's page.
+	 *
+	 * @param string $plugin_slug the slug of the plugin.
+	 * @param string $message     the message to display.
+	 * @param string $type        the class that is applied to the message, defaults to update-message.
+	 */
+	public static function add_plugin_message( $plugin_slug, $message, $type = 'update-message' ) {
+
+		add_filter( 'after_plugin_row_'.$plugin_slug, function( $plugin_name ) use ( $message, $type ) {
+
+			echo '</tr><tr class="plugin-update-tr"><td colspan="3" class="plugin-update"><div class="'.$type.'">'.$message.'</div></td>';
+
+		}, 10 );
+
+	}
+
+	/**
 	 * Autoload classes.
 	 *
 	 * @since 1.0.0

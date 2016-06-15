@@ -74,10 +74,34 @@ class Codeless {
 	 * @param  string $type   the type of message accepted types are success, error, warning, info.
 	 * @param  string $text   the content of the message.
 	 * @param  string $id     optional ID, if passed, notice will be sticky.
-	 * @return mixed
 	 */
 	public static function show_admin_notice( $content, $type, $id = '' ) {
 		new \TDP\Notice( $type, $content, $id );
+	}
+
+	/**
+	 * Adds an action link for the specified plugin into the plugin's page.
+	 *
+	 * @param string $plugin_slug the slug of the plugin.
+	 * @param string $label       the label of the link.
+	 * @param string $link        the link.
+	 */
+	public static function add_plugin_action_link( $plugin_slug, $label, $link ) {
+
+		$link  = esc_html( $link );
+		$label = esc_html( $label );
+
+		add_filter( 'plugin_action_links_'.$plugin_slug, function( $links ) use ( $link, $label ) {
+
+			if( ! empty ( $link ) && ! empty( $label ) ) {
+				$custom_link = '<a href="'. $link .'">'. $label .'</a>';
+				array_push( $links, $custom_link );
+			}
+
+			return $links;
+
+		}, 10 );
+
 	}
 
 	/**

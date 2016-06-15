@@ -105,6 +105,33 @@ class Codeless {
 	}
 
 	/**
+	 * Add a new link to the plugin's meta row.
+	 *
+	 * @param string $plugin_file the folder/file of the plugin.
+	 * @param string $label       the label of the link.
+	 * @param string $link        the link.
+	 */
+	public static function add_plugin_meta_link( $plugin_file, $label, $link ) {
+
+		$link  = esc_html( $link );
+		$label = esc_html( $label );
+
+		add_filter( 'plugin_row_meta', function( $input, $file ) use ( $plugin_file, $link, $label ) {
+
+			if ( $file != $plugin_file )
+				return $input;
+
+			$links = array( '<a href="'. $link .'">'. $label .'</a>' );
+
+			$input = array_merge( $input, $links );
+
+			return $input;
+
+		}, 10, 2 );
+
+	}
+
+	/**
 	 * Autoload classes.
 	 *
 	 * @since 1.0.0

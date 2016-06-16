@@ -149,6 +149,24 @@ class Codeless {
 	}
 
 	/**
+	 * Adds a bubble counter to a menu in wp-admin.
+	 *
+	 * @param int $menu_key the array key number of a menu.
+	 * @param int $counter  the number to display.
+	 */
+	public static function add_count_bubble( $menu_key, $counter ) {
+
+		add_filter( 'admin_menu', function() use ( $menu_key, $counter ) {
+
+			global $menu;
+
+			$menu[ $menu_key ][0] .= " <span class='update-plugins count-1'><span class='update-count'>". $counter ."</span></span>";
+
+		}, 10 );
+
+	}
+
+	/**
 	 * Autoload classes.
 	 *
 	 * @since 1.0.0

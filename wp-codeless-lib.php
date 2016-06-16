@@ -257,6 +257,44 @@ class Codeless {
 	}
 
 	/**
+	 * Add a column to taxonomies tables.
+	 *
+	 * @param mixed  $taxonomies taxonomy name or an array of multiple taxonomies.
+	 * @param string  $label      the label of the column.
+	 * @param string  $callback   the name of the function that handles the output.
+	 * @param integer $priority   priority for the hooks fired.
+	 */
+	public static function add_taxonomy_column( $taxonomies, $label, $callback, $priority = 10 ) {
+
+		if( ! is_array( $taxonomies ) ) {
+			$taxonomies = array( $taxonomies );
+		}
+
+		foreach ( $taxonomies as $tax ) {
+
+			add_filter( 'manage_edit-'.$tax.'_columns', function( $columns ) use ( $label ) {
+
+				$key = sanitize_title_with_dashes( $label );
+
+				return array_merge( $columns, array( $key => $label ) );
+
+			}, $priority );
+
+			add_action( 'manage_'.$tax.'_custom_column', function( $value, $column, $tax_id ) use ( $label, $callback ) {
+
+				$key = sanitize_title_with_dashes( $label );
+
+				if ( $column === $key ) {
+					call_user_func( $callback, $tax_id );
+				}
+
+			}, $priority, 3 );
+
+		}
+
+	}
+
+	/**
 	 * Autoload classes.
 	 *
 	 * @since 1.0.0

@@ -184,6 +184,41 @@ class Codeless {
 	}
 
 	/**
+	 * Adds a column to the user's table.
+	 *
+	 * @param string  $label    column label.
+	 * @param string  $callback function that holds the content of the column.
+	 * @param integer $priority priority for the action.
+	 */
+	public static function add_user_column( $label, $callback, $priority = 10 ) {
+
+		add_filter( 'manage_users_columns', function( $columns ) use ( $label ) {
+
+			$key = sanitize_title_with_dashes( $label );
+
+			return array_merge( $columns, array( $key => $label ) );
+
+		}, $priority );
+
+		add_filter( 'manage_users_custom_column', function( $output, $column_name, $user_id ) use ( $label, $callback ) {
+
+			$key = sanitize_title_with_dashes( $label );
+
+			if ( $column_name === $key ) {
+
+				ob_start();
+
+				call_user_func( $callback, $user_id );
+
+				return ob_get_clean();
+
+			}
+
+		}, $priority, 3 );
+
+	}
+
+	/**
 	 * Autoload classes.
 	 *
 	 * @since 1.0.0

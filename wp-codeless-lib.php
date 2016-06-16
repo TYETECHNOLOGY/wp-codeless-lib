@@ -219,6 +219,44 @@ class Codeless {
 	}
 
 	/**
+	 * Add a column to a post type's table.
+	 *
+	 * @param mixed  $post_types post type name or array of post types.
+	 * @param string  $label      the label of the column.
+	 * @param string  $callback   the name of the function that will handle the output.
+	 * @param integer $priority   priority of the actions and filters fired.
+	 */
+	public static function add_post_type_column( $post_types, $label, $callback, $priority = 10 ) {
+
+		if( ! is_array( $post_types ) ) {
+			$post_types = array( $post_types );
+		}
+
+		foreach ( $post_types as $post_type ) {
+
+			add_filter( 'manage_'.$post_type.'_posts_columns', function( $columns ) use ( $label ) {
+
+				$key = sanitize_title_with_dashes( $label );
+
+				return array_merge( $columns, array( $key => $label ) );
+
+			}, $priority );
+
+			add_action( 'manage_'.$post_type.'_posts_custom_column', function( $column, $post_id ) use ( $label, $callback ) {
+
+				$key = sanitize_title_with_dashes( $label );
+
+				if ( $column === $key ) {
+					call_user_func( $callback, $post_id );
+				}
+
+			}, $priority, 2 );
+
+		}
+
+	}
+
+	/**
 	 * Autoload classes.
 	 *
 	 * @since 1.0.0

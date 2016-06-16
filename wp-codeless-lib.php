@@ -167,6 +167,23 @@ class Codeless {
 	}
 
 	/**
+	 * Add items to the admin menu bar.
+	 *
+	 * @param array $args https://codex.wordpress.org/Class_Reference/WP_Admin_Bar/add_menu
+	 */
+	public static function add_menu_bar_item( $args ) {
+
+		add_filter( 'wp_before_admin_bar_render', function() use ( $args ) {
+
+			global $wp_admin_bar;
+
+			$wp_admin_bar->add_menu( $args );
+
+		}, 999 );
+
+	}
+
+	/**
 	 * Autoload classes.
 	 *
 	 * @since 1.0.0

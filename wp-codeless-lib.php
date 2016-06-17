@@ -259,7 +259,7 @@ class Codeless {
 	/**
 	 * Add a column to taxonomies tables.
 	 *
-	 * @param mixed  $taxonomies taxonomy name or an array of multiple taxonomies.
+	 * @param mixed   $taxonomies taxonomy name or an array of multiple taxonomies.
 	 * @param string  $label      the label of the column.
 	 * @param string  $callback   the name of the function that handles the output.
 	 * @param integer $priority   priority for the hooks fired.
@@ -291,6 +291,34 @@ class Codeless {
 			}, $priority, 3 );
 
 		}
+
+	}
+
+	/**
+	 * Add a new action to the row of a post type.
+	 *
+	 * @param string $post_type post type name.
+	 * @param string $label     label of the link.
+	 * @param string $url       url of the link.
+	 */
+	public static function add_post_row_action( $post_type, $label, $url ) {
+
+		$callback = function( $actions, $post ) use ( $post_type, $label, $url ) {
+
+			if( $post->post_type == $post_type ) {
+
+				$key = sanitize_title_with_dashes( $label );
+
+				$actions[ $key ] = '<a href="'. $url .'">'. $label .'</a>';
+
+			}
+
+			return $actions;
+
+		};
+
+		add_filter( 'post_row_actions', $callback, 10, 2 );
+		add_filter( 'page_row_actions', $callback, 10, 2 );
 
 	}
 

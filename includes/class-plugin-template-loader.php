@@ -1,0 +1,96 @@
+<?php
+/**
+ * A class to handle template files loading for plugins.
+ * Inspired by WP Job Manager template's functions and made some modifications.
+ *
+ * @author     Alessandro Tesoro
+ * @version    1.0.0
+ * @copyright  (c) 2016 Alessandro Tesoro
+ * @license    http://www.gnu.org/licenses/gpl-2.0.txt GNU LESSER GENERAL PUBLIC LICENSE
+*/
+
+namespace TDP;
+
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) exit;
+
+/**
+ * Plugin_Template_Loader class.
+ */
+class Plugin_Template_Loader {
+
+	/**
+	 * Prefix used for filters. Should match to your plugin's one.
+	 *
+	 * @var string
+	 */
+	protected $filter_prefix = '';
+
+	/**
+	 * Reference to the root directory path of the plugin that makes use of this class.
+	 * Usually it's defined through a constant.
+	 *
+	 * @var string
+	 */
+	protected $plugin_directory = '';
+
+	/**
+	 * Directory name where templates are found in this plugin.
+	 *
+	 * @var string
+	 */
+	protected $plugin_template_directory = 'templates';
+
+	/**
+	 * Directory name where custom templates for this plugin should be found in the theme.
+	 *
+	 * @var string
+	 */
+	protected $theme_template_directory = '';
+
+	/**
+	 * Get and include template files.
+	 *
+	 * @param  string $template_name name of the template file to include.
+	 * @param  array  $args          arguments to pass to the template file.
+	 * @return void
+	 */
+	public function get_template( $template_name, $args = array(), $default_path = '' ) {
+
+		if ( $args && is_array( $args ) ) {
+			extract( $args );
+		}
+
+		include( $this->locate_template( $template_name, $default_path ) );
+
+	}
+
+	/**
+	 * Locate a template and return the path for inclusion.
+	 * The function also looks into the theme and child theme.
+	 *
+	 * @param  string $template_name name of the template file to include.
+	 * @param  string $default_path  alternative default path, defaults to empty.
+	 * @return string
+	 */
+	public function locate_template( $template_name, $default_path = '' ) {
+
+		$template = locate_template(
+			array(
+				trailingslashit( $this->theme_template_directory ) . $template_name,
+				$template_name
+			)
+		);
+
+		if ( ! $template && $default_path !== false ) {
+			$default_path = $default_path ? $default_path : $this->plugin_directory . '/'. $this->plugin_template_directory .'/';
+			if ( file_exists( trailingslashit( $default_path ) . $template_name ) ) {
+				$template = trailingslashit( $default_path ) . $template_name;
+			}
+		}
+
+		return apply_filters( $this->filter_prefix.'_locate_template', $template, $template_name, $this->theme_template_directory );
+
+	}
+
+}

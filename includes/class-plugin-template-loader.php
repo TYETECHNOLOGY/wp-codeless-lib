@@ -99,7 +99,7 @@ class Plugin_Template_Loader {
 	 * @param  string $file path to the file.
 	 * @return string
 	 */
-	public static function get_file_version( $file ) {
+	public function get_file_version( $file ) {
 
 		if ( ! file_exists( $file ) ) {
 			return '';
@@ -119,6 +119,53 @@ class Plugin_Template_Loader {
 			$version = _cleanup_header_comment( $match[1] );
 
 		return $version;
+
+	}
+
+	/**
+	 * Scan template files directory.
+	 *
+	 * @param  string $template_path path to scan.
+	 * @return array
+	 */
+	public function scan_template_files( $template_path = '' ) {
+
+		if( $template_path == '' ) {
+			$template_path = $this->plugin_directory . '/' . $this->plugin_template_directory . '/';
+		}
+
+		$files  = scandir( $template_path );
+		$result = array();
+
+		if ( $files ) {
+
+			foreach ( $files as $key => $value ) {
+
+				if ( ! in_array( $value, array( ".",".." ) ) ) {
+
+					if ( is_dir( $template_path . DIRECTORY_SEPARATOR . $value ) ) {
+
+						$sub_files = $this->scan_template_files( $template_path . DIRECTORY_SEPARATOR . $value );
+
+						foreach ( $sub_files as $sub_file ) {
+
+							$result[] = $value . DIRECTORY_SEPARATOR . $sub_file;
+
+						}
+
+					} else {
+
+						$result[] = $value;
+
+					}
+
+				}
+
+			}
+
+		}
+
+		return $result;
 
 	}
 

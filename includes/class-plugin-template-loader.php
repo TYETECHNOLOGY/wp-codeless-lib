@@ -99,7 +99,7 @@ class Plugin_Template_Loader {
 	 * @param  string $file path to the file.
 	 * @return string
 	 */
-	public function get_file_version( $file ) {
+	protected function get_file_version( $file ) {
 
 		if ( ! file_exists( $file ) ) {
 			return '';
@@ -128,7 +128,7 @@ class Plugin_Template_Loader {
 	 * @param  string $template_path path to scan.
 	 * @return array
 	 */
-	public function scan_template_files( $template_path = '' ) {
+	protected function scan_template_files( $template_path = '' ) {
 
 		if( $template_path == '' ) {
 			$template_path = $this->plugin_directory . '/' . $this->plugin_template_directory . '/';
@@ -213,6 +213,7 @@ class Plugin_Template_Loader {
 							'file'          => str_replace( WP_CONTENT_DIR . '/themes/', '', $theme_file ),
 							'core_version'  => $core_version,
 							'theme_version' => $theme_version,
+							'outdated'      => $outdated_templates
 						);
 
 					} else {

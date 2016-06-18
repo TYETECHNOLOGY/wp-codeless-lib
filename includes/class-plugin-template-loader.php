@@ -169,4 +169,68 @@ class Plugin_Template_Loader {
 
 	}
 
+	/**
+	 * Retrieves a list of overwritten template files.
+	 *
+	 * @return array
+	 */
+	public function get_overwritten_template_files() {
+
+		$scanned_files      = $this->scan_template_files();
+		$found_files        = array();
+		$outdated_templates = false;
+
+		if( ! empty( $scanned_files ) && is_array( $scanned_files ) ) {
+
+			foreach ( $scanned_files as $file ) {
+
+				if ( file_exists( get_stylesheet_directory() . '/' . $file ) ) {
+					$theme_file = get_stylesheet_directory() . '/' . $file;
+				} elseif ( file_exists( get_stylesheet_directory() . '/'. $this->theme_template_directory .'/' . $file ) ) {
+					$theme_file = get_stylesheet_directory() . '/'. $this->theme_template_directory .'/' . $file;
+				} elseif ( file_exists( get_template_directory() . '/' . $file ) ) {
+					$theme_file = get_template_directory() . '/' . $file;
+				} elseif( file_exists( get_template_directory() . '/'. $this->theme_template_directory .'/' . $file ) ) {
+					$theme_file = get_template_directory() . '/'. $this->theme_template_directory .'/' . $file;
+				} else {
+					$theme_file = false;
+				}
+
+				// Check that file exist and verify template version.
+				// Add all found files to an array.
+				if( ! empty( $theme_file ) ) {
+
+					$core_version  = $this->get_file_version( $this->plugin_directory . '/' . $this->plugin_template_directory . '/' . $file );
+					$theme_version = $this->get_file_version( $theme_file );
+
+					if ( $core_version && ( empty( $theme_version ) || version_compare( $theme_version, $core_version, '<' ) ) ) {
+
+						if ( ! $outdated_templates ) {
+							$outdated_templates = true;
+						}
+
+						$found_files[] = array(
+							'file'          => str_replace( WP_CONTENT_DIR . '/themes/', '', $theme_file ),
+							'core_version'  => $core_version,
+							'theme_version' => $theme_version,
+						);
+
+					} else {
+
+						$found_files[] = array(
+							'file' => str_replace( WP_CONTENT_DIR . '/themes/', '', $theme_file ),
+						);
+
+					}
+
+				}
+
+			}
+
+		}
+
+		return $found_files;
+
+	}
+
 }

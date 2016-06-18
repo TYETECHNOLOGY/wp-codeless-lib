@@ -93,4 +93,33 @@ class Plugin_Template_Loader {
 
 	}
 
+	/**
+	 * Retrieve metadata from a file. Based on WP Core's get_file_data function.
+	 *
+	 * @param  string $file path to the file.
+	 * @return string
+	 */
+	public static function get_file_version( $file ) {
+
+		if ( ! file_exists( $file ) ) {
+			return '';
+		}
+
+		$fp = fopen( $file, 'r' );
+
+		$file_data = fread( $fp, 8192 );
+
+		fclose( $fp );
+
+		$file_data = str_replace( "\r", "\n", $file_data );
+
+		$version   = '';
+
+		if ( preg_match( '/^[ \t\/*#@]*' . preg_quote( '@version', '/' ) . '(.*)$/mi', $file_data, $match ) && $match[1] )
+			$version = _cleanup_header_comment( $match[1] );
+
+		return $version;
+
+	}
+
 }

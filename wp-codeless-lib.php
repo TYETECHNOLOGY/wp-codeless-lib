@@ -323,6 +323,26 @@ class Codeless {
 	}
 
 	/**
+	 * Loads the required scripts for using the javascript helper libraries.
+	 *
+	 * @since 1.0.0
+	 * @return void.
+	 */
+	public static function add_ui_helper_files() {
+
+		$suffix  = ( self::is_script_debug() ) ? '': '.min';
+		$css_dir = untrailingslashit( plugin_dir_url( __FILE__ ) ) . '/assets/css/';
+		$js_dir  = untrailingslashit( plugin_dir_url( __FILE__ ) ) . '/assets/js/';
+
+		wp_register_style( 'codeless-helper-styling', $css_dir . 'codeless-helper-style' . $suffix . '.css', '1.0.0' );
+		wp_enqueue_style( 'codeless-helper-styling' );
+
+		wp_register_script( 'codeless-helper-library', $js_dir . 'codeless-helper-library' . $suffix . '.js', 'jQuery', '1.0.0', true );
+		wp_enqueue_script( 'codeless-helper-library' );
+
+	}
+
+	/**
 	 * Autoload classes.
 	 *
 	 * @since 1.0.0

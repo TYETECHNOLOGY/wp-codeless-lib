@@ -570,6 +570,4 @@
 
   }; /* ** End: codelessUiWindow ** */
 
-
-
 }( window.codelessUi = window.codelessUi || {} ));

@@ -20,7 +20,9 @@ An helper library with functionalities that are common among my WP projects.
 
 Include the `wp-codeless-lib.php` file into your project and then:
 
-```$helper = new TDP\Codeless;```
+```php
+$helper = new TDP\Codeless;
+```
 
 ### Check if WP_DEBUG is defined
 

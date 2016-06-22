@@ -26,8 +26,22 @@ $helper = new TDP\Codeless;
 
 ### Check if WP_DEBUG is defined
 
-```if( $helper::is_development() )```
+```php
+if( $helper::is_development() )
+```
 
 ### Check if WP_DEBUG and SCRIPT_DEBUG are defined
 
-```if( $helper::is_development() && $helper::is_script_debug() )```
+```php
+if( $helper::is_development() && $helper::is_script_debug() )
+```
+
+### Show an admin notice
+
+```php
+$helper::show_admin_notice( $content = ‘The message’ , $type = ‘success’ , $id );
+```
+
+If `$id` is defined, the message will be set as “sticky”. Sticky notices will stay visible until the user dismisses the message.
+
+Dismissed messages are stored into the `wp_codeless_dismissed_notices` option.

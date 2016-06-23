@@ -184,3 +184,75 @@ add_action( 'admin_enqueue_scripts', 'codeless_modal_scripts' );
 ```
 
 Ps: don't use inline css, this was just an example.
+
+### Plugin template loader
+
+Template files are standard for themes. For example if a user wishes to customize a template file he/she can just copy and file into the child theme and modify it. Unfortunately this isn't possible with plugins unless developers build their own custom template loader.
+
+Many plugins like WooCommerce and EDD have their own template builder so that developers can customize the look of plugin.
+
+The Codeless library comes with it's own template loader that can be reused as many times as you want. It was highly inspired by the WP Job Manager plugin, and WooCommerce.
+
+The template loader into the Codeless library is also capable of recognizing which template files are being overwritten by a theme and if the template file into the theme is outdated.
+
+The following is the order with which template files are loaded:
+
+1. Child Theme
+2. Parent Theme
+3. Plugin’s folder
+
+Here's an example of how to user the template loader.
+
+##### Extend the template loader class and configure it for your plugin:
+
+```php
+define( 'RESTAURANT_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+
+class Restaurant_Template_Loader extends \TDP\Plugin_Template_Loader {
+
+  // Prefix for the filters within the class.
+  protected $filter_prefix = 'restaurant_plugin';
+
+  // Path to the plugin.
+  protected $plugin_directory = RESTAURANT_PLUGIN_DIR;
+
+  // Name of the folder that contains all the templates within the plugin.
+  protected $plugin_template_directory = 'templates';
+
+  // Name of the folder that contains the templates within a theme.
+  protected $theme_template_directory = 'restaurant-templates';
+
+}
+
+$restaurant_template_loader = new Restaurant_Template_Loader;
+```
+
+##### Load the template file:
+
+To load a template file you can now access the get_template method:
+
+```php
+$restaurant_template_loader->get_template( 'file.php', array( 'my_variable' => 'value' ) );
+```
+
+You can pass arguments via an array to template files and then access the data in it `echo $my_variable`.
+
+##### Checking overwritten files:
+
+If you wish to check which files have been overwritten by a theme, you can access the `get_overwritten_template_files` method:
+
+```php
+$restaurant_template_loader->get_overwritten_template_files();
+```
+
+The method will return an array with details about the files overwritten and whether or not the file is outdated.
+
+If you wish to use this feature, your template files must have the following comments at the top of the file. You must define @version.
+
+```php
+/**
+ * Template file comments here...
+ *
+ * @version 1.0.0
+ */
+```

@@ -170,7 +170,8 @@ add_action( ‘admin_enqueue_scripts’, ‘codeless_modal_scripts’ );
 
   });
 
-  </script>```
+  </script>
+```
 
 ##### The html part:
 

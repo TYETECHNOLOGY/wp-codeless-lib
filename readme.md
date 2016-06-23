@@ -170,7 +170,7 @@ add_action( ‘admin_enqueue_scripts’, ‘codeless_modal_scripts’ );
 
   });
 
-  </script>
+</script>
 ```
 
 ##### The html part:
@@ -178,9 +178,9 @@ add_action( ‘admin_enqueue_scripts’, ‘codeless_modal_scripts’ );
 ```html
 <a href=“#” class=“trigger”>Trigger</a>
 
-  <div class=“popupcontainer” style=“display:none”>
+<div class=“popupcontainer” style=“display:none”>
   Yo!
-  </div>
+</div>
 ```
 
 Ps: don’t use inline css, this was just an example.

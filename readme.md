@@ -33,7 +33,7 @@ if( $helper::is_development() )
 ### Check if WP_DEBUG and SCRIPT_DEBUG are defined
 
 ```php
-if( $helper::is_development() && $helper::is_script_debug() )
+if( $helper::is_script_debug() )
 ```
 
 ### Show an admin notice
@@ -95,3 +95,91 @@ function my_callback_function( $user_id ) {
 
 }
 ```
+
+### Add post type column
+
+```php
+$helper::add_post_type_column( $post_types = ‘post’, $label = ‘Custom column’, $callback = ‘my_callback_function’, $priority = 10 );
+
+function my_callback_function( $post_id ) {
+
+  echo $post_id;
+
+}
+```
+
+`$post_types` can also be an array of post types.
+
+### Add taxonomy column
+
+```php
+$helper::add_taxonomy_column( $taxonomies = ‘post_tag’, $label = ‘Custom column’, $callback = ‘my_callback_function’, $priority = 10 );
+
+function my_callback_function( $tax_id ) {
+
+  echo $tax_id;
+
+}
+```
+
+`$taxonomies` can also be an array of taxonomies.
+
+### Add post row action links
+
+```php
+php
+$helper::add_post_row_action( $post_type = ‘post’, $label = ‘Custom link’, $link = ‘#’ );
+```
+
+### Using the built-in modal interface
+
+#### Load the required scripts:
+
+```php
+function codeless_modal_scripts() {
+
+  $helper = new TDP\Codeless;
+
+  $helper::add_ui_helper_files();
+
+}
+add_action( ‘admin_enqueue_scripts’, ‘codeless_modal_scripts’ );
+```
+
+#### Create the modal within an admin page:
+
+##### The jQuery part:
+
+```html
+<script>
+
+  jQuery(document).ready(function ($) {
+
+    jQuery( ‘.trigger’ ).click(function() {
+
+      var popup = null;
+
+      popup = codelessUi.popup()
+        .modal( true )
+        .size( 740, 480 )
+        .title( ‘Window title’ )
+        .content( ‘.popupcontainer’ )
+        .show();
+
+    });
+
+  });
+
+  </script>```
+
+##### The html part:
+
+```html
+<a href=“#” class=“trigger”>Trigger</a>
+
+  <div class=“popupcontainer” style=“display:none”>
+  Yo!
+  </div>
+```
+
+Ps: don’t use inline css, this was just an example.

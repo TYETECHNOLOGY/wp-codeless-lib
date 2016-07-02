@@ -214,6 +214,9 @@ class Notice {
     // Check our nonce and make sure it's correct.
     check_ajax_referer( self::AJAX_ACTION, 'notice_nonce' );
 
+    if( ! current_user_can( 'manage_options' ) )
+			return;
+
     $this->dismiss_notice( sanitize_title( $_POST['notice_id'] ) );
 
     wp_send_json_success();

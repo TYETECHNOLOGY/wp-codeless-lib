@@ -369,7 +369,11 @@ class Codeless {
 		$class_path = implode( '/', $class_path );
 
 		// Finally load the file.
-		require_once $this->includes_path . $class_path . '/class-' . $class_file . '.php';
+		$file = $this->includes_path . $class_path . '/class-' . $class_file . '.php';
+
+		if( file_exists( $file ) ) {
+			require_once $file;
+		}
 
 	}
 

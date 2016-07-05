@@ -428,8 +428,6 @@
 				_wnd = null;
 				_popup = null;
 
-				delete _all_popups[_me.id];
-
 				_me = null;
 			};
 

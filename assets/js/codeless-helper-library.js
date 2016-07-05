@@ -402,13 +402,83 @@
 		};
 
 		/**
-		 * Return the object of the window.
+		 * Completely removes the popup window.
+		 * The popup object cannot be re-used after calling this function.
 		 *
-		 * @return object
 		 */
-		this.$ = function $() {
-			return _wnd;
+		this.destroy = function destroy() {
+			var orig_onhide = _onhide;
+
+			// Prevent infinite loop when calling .destroy inside onclose handler.
+			if ( _status === 'closing' ) { return; }
+
+			_onhide = function() {
+				if ( typeof orig_onhide === 'function' ) {
+					orig_onhide.apply( _me, [ _me.$() ] );
+				}
+
+				_status = 'closing';
+
+				if ( typeof _onclose === 'function' ) {
+					_onclose.apply( _me, [ _me.$() ] );
+				}
+
+				// Completely remove the popup from the memory.
+				_wnd.remove();
+				_wnd = null;
+				_popup = null;
+
+				delete _all_popups[_me.id];
+
+				_me = null;
+			};
+
+			_me.hide();
 		};
+
+		/**
+		 * Adds an event handler to the dialog.
+		 *
+		 * @since  2.0.1
+		 */
+		this.on = function on( event, selector, callback ) {
+			_wnd.on( event, selector, callback );
+
+			if ( _wnd.filter( selector ).length ) {
+				_wnd.on( event, callback );
+			}
+
+			return _me;
+		};
+
+		/**
+		 * Removes an event handler from the dialog.
+		 *
+		 * @since  2.0.1
+		 */
+		this.off = function off( event, selector, callback ) {
+			_wnd.off( event, selector, callback );
+
+			if ( _wnd.filter( selector ).length ) {
+				_wnd.off( event, callback );
+			}
+
+			return _me;
+		};
+
+		/**
+		 * Returns the jQuery object of the window
+		 *
+		 * @since  1.0.0
+		 */
+		this.$ = function $( selector ) {
+			if ( selector ) {
+				return _wnd.find( selector );
+			} else {
+				return _wnd;
+			}
+		};
+
 
 		/**
 		 * Create dom elements for the window.

@@ -343,6 +343,40 @@ class Codeless {
 	}
 
 	/**
+	 * Removes a post type column.
+	 *
+	 * @param  mixed $post_types post types.
+	 * @param  mixed $columns    columns to remove.
+	 * @return void
+	 */
+	public static function remove_post_type_column( $post_types, $columns ) {
+
+		if ( ! is_array( $post_types ) ) {
+			$post_types = array( $post_types );
+		}
+
+		if ( ! is_array( $columns ) ) {
+			$columns = array( $columns );
+		}
+
+		foreach ( $post_types as $post_type ) {
+
+			add_action( 'manage_edit-'.$post_type.'_columns', function( $column_headers ) use ( $columns ) {
+
+				foreach ( $columns as $column ) {
+					unset( $column_headers[ $column ] );
+					unset( $column_headers[ strtolower( $column ) ] );
+				}
+
+				return $column_headers;
+
+			} );
+
+		}
+
+	}
+
+	/**
 	 * Autoload classes.
 	 *
 	 * @since 1.0.0
